@@ -1,0 +1,3 @@
+#!/bin/sh
+
+route add default gw 172.30.1.64
