@@ -1,12 +1,12 @@
 SHELL := /bin/bash
 
-remote := qtprobe
+remote ?= qtprobe
 
-image-name = nettestimg
-container-name = nettest
-container-entrypoint = /bin/sh
+image-name ?= nettestimg
+container-name ?= nettest
+container-entrypoint ?= /bin/sh
 
-docker-run-args = --cap-add=NET_ADMIN --net=test
+docker-run-args ?= --cap-add=NET_ADMIN --net=test
 
 basename := $(shell basename $(PWD))
 dirname := $(shell dirname $(PWD))
@@ -37,8 +37,14 @@ echo:
 	@echo "$(exclude)"
 
 
+
+.PHONY: ssh-mkdir-p
+ssh-mkdir-p:
+	@ssh $(remote) '[[ -d $(remote-path) ]] || mkdir -p $(remote-path)'
+
+
 .PHONY: push
-push:
+push: ssh-mkdir-p
 	@echo '==> Push files to remote $(ssh-path) ...'
 	@$(rsync) $(host-path)/ $(ssh-path)
 
